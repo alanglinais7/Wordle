@@ -40,7 +40,7 @@ def user_guesses():
 #prints blank spaces for remaining guesses
 def print_game_board(guesses, length):
     for x in range(guesses):
-        #TO-DO Fix this abomination
+        #at first I thought this was bad, but it's acutally kind of elegant?
         for index, y in enumerate(range(length)):
             if index != length-1:
                 print('_', end = " ")
@@ -50,9 +50,11 @@ def print_game_board(guesses, length):
 #prints out the guesses so far, with checks included
 def print_guess_board(list_of_guesses, list_of_checks):
     for index, x in enumerate(list_of_guesses):
+        #cast the the words in the lists as lists so we can iterate through each letter
         guess_temp = list(x)
         check_temp = list_of_checks[index]
         for count, y in enumerate(guess_temp):
+            #check to see if the letter is the last one in the word
             if count != len(guess_temp)-1:
                 if check_temp[count] == 2:
                     print(colored(f'{guess_temp[count]}', 'green' ), end = ' ')
@@ -60,6 +62,7 @@ def print_guess_board(list_of_guesses, list_of_checks):
                     print(colored(f'{guess_temp[count]}', 'yellow'), end = ' ')
                 else:
                     print(f'{y}', end = ' ')
+            #ugliest part of the code here—in order to get a line wrap, we need to make sure the last letter doesn't include the end = ''
             else:
                 if check_temp[count] == 2:
                     print(colored(f'{guess_temp[count]}', 'green' ))
@@ -68,6 +71,7 @@ def print_guess_board(list_of_guesses, list_of_checks):
                 else:
                     print(f'{y}')
 
+#ask user how many guesses they want at the word
 def input_guess(length):
     while True:
         word = input('Take your guess: ')
@@ -89,15 +93,20 @@ def check_right_spot(attempt, game_word):
             right.append(0)
     return right
 
+#Here we check to see if the letter in the guess is in the word, but just not in the right place
+#We'll use 1 in the list to indicate that. Maybe not the best solution
 def check_right_letter(attempt, game_word, right):
     list_game = list(game_word)
     list_attempt = list(attempt)
     for index, x in enumerate(right):
+        #Make sure we don't overwrite the 2 already there
         if x != 2:
             if list_attempt[index] in game_word:
                 right[index] = 1
     return right
 
+#We check to see if the player won by confirming that every letter is in the right spot. If so we return True
+#That would mean a list of only twos. If we see anything else we return False
 def check_win(right):
     for x in right:
         if x != 2: return False
@@ -130,8 +139,10 @@ def main():
     print(colored('Right letter, wrong space: yellow', 'yellow'))
     print_game_board(guesses, length)
 
+    #master control of the game, a while loop isn't great but a good stop gap for a hacky project
     while game_on == True:
         victory = False
+        #iterate the guesses at the top in case the user is correct right away
         count_guesses += 1
         #check to see if user has guesses left
         if count_guesses > guesses:
@@ -139,6 +150,7 @@ def main():
             print(f'The word was {game_word}')
             game_on = False
             break
+        #Only show guess again after the player has already guessed once
         if count_guesses > 1:
             print('Guess again: ')
         attempt = input_guess(length)
@@ -153,10 +165,16 @@ def main():
             break
         #now we check to see if the guess contained correct letters
         right = check_right_letter(attempt, game_word, right)
+        #add the list of checks to the master list to print out the board
         list_of_checks.append(right)
+        #first we print the guesses with the correct formatting
         print_guess_board(list_of_guesses, list_of_checks)
+        #Then we print the game board minus the amount of times we've guessed.
+        #I.e. if a player wanted 5 attempts and has tried twice, we only need to print 3 blank rows
         print_game_board(guesses-count_guesses, length)
+        #Add some spacing
         print("")
+        #Head back up to the top of the loop
         continue
 
 
