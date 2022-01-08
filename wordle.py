@@ -62,9 +62,9 @@ def print_guess_board(list_of_guesses, list_of_checks):
                     print(f'{y}', end = ' ')
             else:
                 if check_temp[count] == 2:
-                    print(colored(f'{guess_temp[count]}', 'green' ), end = ' ')
+                    print(colored(f'{guess_temp[count]}', 'green' ))
                 elif check_temp[count] == 1:
-                    print(colored(f'{guess_temp[count]}', 'yellow'), end = ' ')
+                    print(colored(f'{guess_temp[count]}', 'yellow'))
                 else:
                     print(f'{y}')
 
@@ -135,7 +135,7 @@ def main():
         count_guesses += 1
         #check to see if user has guesses left
         if count_guesses > guesses:
-            print('You lose')
+            print(colored('You lose', 'red'))
             print(f'The word was {game_word}')
             game_on = False
             break
