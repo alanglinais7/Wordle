@@ -1,6 +1,7 @@
 #import libraries
 from random import randint
 import csv
+from termcolor import colored, cprint
 
 #create global variables
 word_bank = []
@@ -23,7 +24,7 @@ def user_length():
             length = int(input('How many letters in the word? '))
             break
         except ValueError:
-            print("That's not a number. Try again please")
+            print(colored("That's not a number. Try again please",'red'))
     return length
 
 #checks to see how many attempts the user wants
@@ -33,7 +34,7 @@ def user_guesses():
             guesses = int(input('How many guesses do you want? '))
             break
         except ValueError:
-            print("That's not a number. Try again please")
+            print(colored("That's not a number. Try again please",'red'))
     return guesses
 
 #prints blank spaces for remaining guesses
@@ -54,16 +55,16 @@ def print_guess_board(list_of_guesses, list_of_checks):
         for count, y in enumerate(guess_temp):
             if count != len(guess_temp)-1:
                 if check_temp[count] == 2:
-                    print(f':{guess_temp[count]}:', end = ' ')
+                    print(colored(f'{guess_temp[count]}', 'green' ), end = ' ')
                 elif check_temp[count] == 1:
-                    print(f'.{guess_temp[count]}.', end = ' ')
+                    print(colored(f'{guess_temp[count]}', 'yellow'), end = ' ')
                 else:
                     print(f'{y}', end = ' ')
             else:
                 if check_temp[count] == 2:
-                    print(f':{guess_temp[count]}:')
+                    print(colored(f'{guess_temp[count]}', 'green' ), end = ' ')
                 elif check_temp[count] == 1:
-                    print(f'.{guess_temp[count]}.')
+                    print(colored(f'{guess_temp[count]}', 'yellow'), end = ' ')
                 else:
                     print(f'{y}')
 
@@ -71,7 +72,7 @@ def input_guess(length):
     while True:
         word = input('Take your guess: ')
         if len(word) != length:
-            print('Word does not match length. Try again')
+            print(colored('Word does not match length. Try again','red'))
         else:
             break
     return word
@@ -125,8 +126,8 @@ def main():
 
 
     #draw game board
-    print('Right letter, right space: :letter):')
-    print('Right letter, wrong space: .(letter).')
+    print(colored('Right letter, right space: green', 'green'))
+    print(colored('Right letter, wrong space: yellow', 'yellow'))
     print_game_board(guesses, length)
 
     while game_on == True:
@@ -146,7 +147,7 @@ def main():
         victory = check_win(right)
         #we just need to check victory after checking if all the letters are in the right spot
         if victory == True:
-            print('You win')
+            print(colored('You win','green'))
             print(f'It took you {count_guesses} tries')
             game_on = False
             break
