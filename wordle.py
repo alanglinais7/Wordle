@@ -29,16 +29,11 @@ def load_scoreboard(fp, name, length, guesses):
         line_list = line.split(',')
         #make sure we're only grabbing relevant stats, and we only want the # of tries
         if name == line_list[0] and length == int(line_list[1]) and guesses == int(line_list[2]):
-            if str(line_list[4]) == 'y':
+            if int(line_list[4]) == 1:
                 wins.append(int(line_list[3]))
             #add one loss to the loss column
             else:
                 num_of_losses += 1
-                print(line_list[0])
-                print(line_list[1])
-                print(line_list[2])
-                print(line_list[3])
-                print(line_list[4])
     return wins, num_of_losses
 
 
@@ -148,6 +143,10 @@ def check_win(right):
         if x != 2: return False
     return True
 
+def check_scoreboard(wins, losses):
+    print(f'The average amount of tries it takes you is {sum(wins)/len(wins)}')
+    print(f'Your winning percentage is {len(wins)/(len(wins)+losses)*100}%')
+
 def main():
     #Get inputs from user
     length = user_length()
@@ -164,11 +163,8 @@ def main():
     fp_words = open('words.csv','r')
     word_bank = load_word(fp_words, length)
 
-    # fp_wins = open('score_tracker.csv','r')
-    # wins, losses = load_scoreboard(fp_wins, name, length, guesses)
-
-    print(f'Wins: {wins}')
-    print(f'Num of losses: {losses}')
+    fp_wins = open('score_tracker.csv','r')
+    wins, losses = load_scoreboard(fp_wins, name, length, guesses)
 
     #checks to see if there are available words
     #pick random word from list
@@ -183,6 +179,7 @@ def main():
     print(colored('Right letter, right space: green', 'green'))
     print(colored('Right letter, wrong space: yellow', 'yellow'))
     print_game_board(guesses, length)
+    print(game_word)
 
     #master control of the game, a while loop isn't great but a good stop gap for a hacky project
     while game_on == True:
@@ -206,6 +203,7 @@ def main():
         if victory == True:
             print(colored('You win','green'))
             print(f'It took you {count_guesses} tries')
+            check_scoreboard(wins, losses)
             game_on = False
             break
         #now we check to see if the guess contained correct letters
