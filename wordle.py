@@ -185,7 +185,6 @@ def main():
     print(colored('Right letter, right space: green', 'green'))
     print(colored('Right letter, wrong space: yellow', 'yellow'))
     print_game_board(guesses, length)
-    print(game_word)
 
     #master control of the game, a while loop isn't great but a good stop gap for a hacky project
     while game_on == True:
