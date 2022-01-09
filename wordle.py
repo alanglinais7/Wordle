@@ -143,9 +143,15 @@ def check_win(right):
         if x != 2: return False
     return True
 
+#check the file for score
 def check_scoreboard(wins, losses):
     print(f'The average amount of tries it takes you is {sum(wins)/len(wins)}')
     print(f'Your winning percentage is {len(wins)/(len(wins)+losses)*100}%')
+
+def add_to_scoreboard(fp_write, name, length, guesses, count_guesses, win):
+    csv_writer = csv.writer(fp_write)
+    csv_writer.writerow([name, length, guesses, count_guesses, win])
+
 
 def main():
     #Get inputs from user
@@ -164,7 +170,7 @@ def main():
     word_bank = load_word(fp_words, length)
 
     fp_wins = open('score_tracker.csv','r')
-    wins, losses = load_scoreboard(fp_wins, name, length, guesses)
+    fp_write = open('score_tracker.csv', 'a', newline = '')
 
     #checks to see if there are available words
     #pick random word from list
@@ -190,6 +196,9 @@ def main():
         if count_guesses > guesses:
             print(colored('You lose', 'red'))
             print(f'The word was {game_word}')
+            add_to_scoreboard(fp_write, name, length, guesses, count_guesses, 0)
+            wins, losses = load_scoreboard(fp_wins, name, length, guesses)
+            check_scoreboard(wins, losses)
             game_on = False
             break
         #Only show guess again after the player has already guessed once
@@ -203,6 +212,8 @@ def main():
         if victory == True:
             print(colored('You win','green'))
             print(f'It took you {count_guesses} tries')
+            add_to_scoreboard(fp_write, name, length, guesses, count_guesses, 1)
+            wins, losses = load_scoreboard(fp_wins, name, length, guesses)
             check_scoreboard(wins, losses)
             game_on = False
             break

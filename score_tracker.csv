@@ -1,3 +1,5 @@
-Name,Length of Word,# of guesses allowed,Tries,Win (y/n)
+Name,Length of Word,# of guesses allowed,Tries,Win (1 yes/0 no)
 austin,5,6,4,1
 austin,5,6,6,0
+austin,5,6,2,1
+austin,5,6,2,1
