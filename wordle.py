@@ -2,6 +2,7 @@
 from random import randint
 import csv
 from termcolor import colored, cprint
+from english_words import english_words_set
 
 #create global variables
 word_bank = []
@@ -10,12 +11,37 @@ game_on = True
 #takes file pointer as an arg, and loads words of the desired length into a list
 def load_word(fp, length):
     all_words = []
-    for line in (fp):
+    for line in fp:
         line_list = line.split(',')
         #check to see if word is the right length, if so, we add it
         if int(line_list[1]) == length:
             all_words.append(line_list[0])
     return all_words
+
+#loads the scoreboard
+def load_scoreboard(fp, name, length, guesses):
+    num_of_losses = 0
+    #this will only take the number of guesses it took in the wins
+    wins = []
+    #skip header
+    next(fp)
+    for line in fp:
+        line_list = line.split(',')
+        #make sure we're only grabbing relevant stats, and we only want the # of tries
+        if name == line_list[0] and length == int(line_list[1]) and guesses == int(line_list[2]):
+            if str(line_list[4]) == 'y':
+                wins.append(int(line_list[3]))
+            #add one loss to the loss column
+            else:
+                num_of_losses += 1
+                print(line_list[0])
+                print(line_list[1])
+                print(line_list[2])
+                print(line_list[3])
+                print(line_list[4])
+    return wins, num_of_losses
+
+
 
 #checks to see how long of a word the user wants to guess
 def user_length():
@@ -57,7 +83,7 @@ def print_guess_board(list_of_guesses, list_of_checks):
             #check to see if the letter is the last one in the word
             if count != len(guess_temp)-1:
                 if check_temp[count] == 2:
-                    print(colored(f'{guess_temp[count]}', 'green' ), end = ' ')
+                    print(colored(f'{guess_temp[count]}', 'green'), end = ' ')
                 elif check_temp[count] == 1:
                     print(colored(f'{guess_temp[count]}', 'yellow'), end = ' ')
                 else:
@@ -75,11 +101,21 @@ def print_guess_board(list_of_guesses, list_of_checks):
 def input_guess(length):
     while True:
         word = input('Take your guess: ')
+        #make sure the guess is equal to the length
         if len(word) != length:
             print(colored('Word does not match length. Try again','red'))
         else:
-            break
+            #now check to see if the guess is a word
+            if word not in english_words_set:
+                print(colored('Word is not in English. Try again','red'))
+            else:
+                break
     return word
+
+#takes the user's name
+def user_name():
+    name = input('What is your name (all lowercase please): ')
+    return name
 
 #checks guess vs actual word, places a 2 in the list if the position is the same
 def check_right_spot(attempt, game_word):
@@ -116,15 +152,24 @@ def main():
     #Get inputs from user
     length = user_length()
     guesses = user_guesses()
+    name = user_name()
     count_guesses = 0
     list_of_guesses = []
     list_of_checks = []
     right = []
     game_on = True
+    losses = 0
 
     #open file, parse for words that fit user input
-    fp = open('words.csv','r')
-    word_bank = load_word(fp, length)
+    fp_words = open('words.csv','r')
+    word_bank = load_word(fp_words, length)
+
+    # fp_wins = open('score_tracker.csv','r')
+    # wins, losses = load_scoreboard(fp_wins, name, length, guesses)
+
+    print(f'Wins: {wins}')
+    print(f'Num of losses: {losses}')
+
     #checks to see if there are available words
     #pick random word from list
     if len(word_bank) == 0:
