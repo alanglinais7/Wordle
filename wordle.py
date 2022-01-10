@@ -2,11 +2,13 @@
 from random import randint
 import csv
 from termcolor import colored, cprint
-from english_words import english_words_set
+#from english_words import english_words_set
+import enchant
 
 #create global variables
 word_bank = []
 game_on = True
+dictionary = enchant.Dict('en_US')
 
 #takes file pointer as an arg, and loads words of the desired length into a list
 def load_word(fp, length):
@@ -101,7 +103,7 @@ def input_guess(length):
             print(colored('Word does not match length. Try again','red'))
         else:
             #now check to see if the guess is a word
-            if word not in english_words_set:
+            if dictionary.check(word) == False:
                 print(colored('Word is not in English. Try again','red'))
             else:
                 break
@@ -185,6 +187,7 @@ def main():
     print(colored('Right letter, right space: green', 'green'))
     print(colored('Right letter, wrong space: yellow', 'yellow'))
     print_game_board(guesses, length)
+    print(game_word)
 
     #master control of the game, a while loop isn't great but a good stop gap for a hacky project
     while game_on == True:
@@ -209,6 +212,9 @@ def main():
         victory = check_win(right)
         #we just need to check victory after checking if all the letters are in the right spot
         if victory == True:
+            list_of_checks.append(right)
+            print_guess_board(list_of_guesses, list_of_checks)
+            print_game_board(guesses-count_guesses, length)
             print(colored('You win','green'))
             print(f'It took you {count_guesses} tries')
             add_to_scoreboard(fp_write, name, length, guesses, count_guesses, 1)
