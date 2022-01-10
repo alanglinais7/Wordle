@@ -155,6 +155,13 @@ def add_to_scoreboard(fp_write, name, length, guesses, count_guesses, win):
     csv_writer = csv.writer(fp_write)
     csv_writer.writerow([name, length, guesses, count_guesses, win])
 
+def play_again():
+    answer = input('Do you want to play again? (y/n): ')
+    if answer.lower() == 'y':
+        main()
+    else:
+        return False
+
 
 def main():
     #Get inputs from user
@@ -188,7 +195,6 @@ def main():
     print(colored('Right letter, right space: green', 'green'))
     print(colored('Right letter, wrong space: yellow', 'yellow'))
     print_game_board(guesses, length)
-    print(game_word)
 
     #master control of the game, a while loop isn't great but a good stop gap for a hacky project
     while game_on == True:
@@ -204,6 +210,7 @@ def main():
             add_to_scoreboard(fp_write, name, length, guesses, count_guesses, 0)
             wins, losses = load_scoreboard(fp_wins, name, length, guesses)
             check_scoreboard(wins, losses)
+            play_again()
             game_on = False
             break
         #Only show guess again after the player has already guessed once
@@ -230,6 +237,7 @@ def main():
             wins, losses = load_scoreboard(fp_wins, name, length, guesses)
             #finally we show the user the stats
             check_scoreboard(wins, losses)
+            play_again()
             game_on = False
             break
         #now we check to see if the guess contained correct letters
