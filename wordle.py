@@ -145,11 +145,12 @@ def check_win(right):
         if x != 2: return False
     return True
 
-#check the file for score
+#check the file for score and calculates stats
 def check_scoreboard(wins, losses):
     print(f'The average amount of tries it takes you is {sum(wins)/len(wins)}')
     print(f'Your winning percentage is {len(wins)/(len(wins)+losses)*100}%')
 
+#Adds a new row to the scoreboard with all the data. We don't need to return anything here
 def add_to_scoreboard(fp_write, name, length, guesses, count_guesses, win):
     csv_writer = csv.writer(fp_write)
     csv_writer.writerow([name, length, guesses, count_guesses, win])
@@ -194,10 +195,12 @@ def main():
         victory = False
         #iterate the guesses at the top in case the user is correct right away
         count_guesses += 1
-        #check to see if user has guesses left
+        #check to see if user has guesses left, it not they lose
+        #TO-DO Make this a function lmao
         if count_guesses > guesses:
             print(colored('You lose', 'red'))
             print(f'The word was {game_word}')
+            #add the user's scores, check the scoreboard, and show stats
             add_to_scoreboard(fp_write, name, length, guesses, count_guesses, 0)
             wins, losses = load_scoreboard(fp_wins, name, length, guesses)
             check_scoreboard(wins, losses)
@@ -211,14 +214,21 @@ def main():
         right = check_right_spot(attempt, game_word)
         victory = check_win(right)
         #we just need to check victory after checking if all the letters are in the right spot
+        #TO-DO Make this a function lmao
         if victory == True:
+            #I want to print a finished gameboard with the word all in green so I have to add this to list of checks first
             list_of_checks.append(right)
+            #Now we print the gameboard
             print_guess_board(list_of_guesses, list_of_checks)
             print_game_board(guesses-count_guesses, length)
             print(colored('You win','green'))
+            #Lets show the user their stats now
             print(f'It took you {count_guesses} tries')
+            #Add this game's stats to the scoreboard file
             add_to_scoreboard(fp_write, name, length, guesses, count_guesses, 1)
+            #now lets check load the relevant scores
             wins, losses = load_scoreboard(fp_wins, name, length, guesses)
+            #finally we show the user the stats
             check_scoreboard(wins, losses)
             game_on = False
             break
