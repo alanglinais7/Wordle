@@ -12,6 +12,7 @@ When you guess the word, if a letter is in the word in the right spot it will be
 At the end of the game you'll recieve your score, as well as statisctics on how well you've done in the past (for the same difficulty).
 
 To run this game, make sure all of the files are in the same directory, navigate to the folder in your terminal and type, 'python3 wordle.py'
+You may have to install some dependencies. Pyenchant is particularily difficult—it requires homebrew (https://brew.sh), and then a command in the terminal of 'brew install enchant'. Everything else plays nice with pip though and can be installed with 'pip install {package name}'
 
 If you have any questions about this game, please feel free to reach out to me on Twitter at @alanglinais7
 
